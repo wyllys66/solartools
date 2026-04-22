@@ -1,0 +1,8 @@
+.build/
+.swiftpm/
+Package.resolved
+.DS_Store
+xcuserdata/
+*.xcodeproj/
+SolarBar.app/
+CLAUDE.md
