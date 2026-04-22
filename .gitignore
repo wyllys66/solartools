@@ -5,4 +5,5 @@ Package.resolved
 xcuserdata/
 *.xcodeproj/
 SolarBar.app/
+build/
 CLAUDE.md
