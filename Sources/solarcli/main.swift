@@ -8,9 +8,10 @@
 // The K750 is a solar-powered wireless keyboard that talks to a host through a
 // Logitech Unifying Receiver (USB VID 0x046d, PID 0xc52b). It reports battery
 // charge and ambient light over Logitech's vendor-specific HID++ protocol.
-// This tool issues the HID++ "solar charge" query (sub-id 0x09) and decodes
-// the keyboard's subsequent status broadcasts (sub-id 0x0b) into a human-
-// readable charge % and lux reading.
+// This tool issues a HID++ solar-charge request (sub-id 0x0b) and decodes
+// the keyboard's subsequent status broadcasts (also sub-id 0x0b) into a
+// human-readable charge % and lux reading. Byte 4 of the request tells the
+// firmware how many reports to emit before going quiet.
 //
 // Approach
 // --------
@@ -138,13 +139,13 @@ do {
             CFRunLoopStop(CFRunLoopGetCurrent())
         }
         receiver.scheduleOnCurrentRunLoop()
-        try receiver.sendQuery()
+        try receiver.sendQuery(reports: UInt8(clamping: Int(onceTimeout)))
 
         // The K750's status broadcast is sporadic; resend the query periodically
         // so we don't rely on a single shot landing during the listening window.
         let retry = Timer.scheduledTimer(withTimeInterval: onceRetryInterval, repeats: true) { _ in
             do {
-                try receiver.sendQuery()
+                try receiver.sendQuery(reports: UInt8(clamping: Int(onceTimeout)))
             } catch {
                 FileHandle.standardError.write(Data("solar: \(error)\n".utf8))
             }
@@ -165,10 +166,10 @@ do {
             fflush(stdout)
         }
         receiver.scheduleOnCurrentRunLoop()
-        try receiver.sendQuery()
+        try receiver.sendQuery(reports: UInt8(clamping: Int(interval)))
         Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
             do {
-                try receiver.sendQuery()
+                try receiver.sendQuery(reports: UInt8(clamping: Int(interval)))
             } catch {
                 FileHandle.standardError.write(Data("solar: \(error)\n".utf8))
             }

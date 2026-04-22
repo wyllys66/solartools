@@ -62,7 +62,7 @@ final class ReadingStore: ObservableObject {
 
     func refresh() {
         do {
-            try receiver?.sendQuery()
+            try receiver?.sendQuery(reports: UInt8(clamping: Int(pollInterval)))
             errorMessage = nil
         } catch {
             errorMessage = String(describing: error)
@@ -88,7 +88,7 @@ final class ReadingStore: ObservableObject {
             self.device = dev
             self.receiver = rx
 
-            try rx.sendQuery()
+            try rx.sendQuery(reports: UInt8(clamping: Int(pollInterval)))
 
             pollTimer = Timer.scheduledTimer(withTimeInterval: pollInterval, repeats: true) { [weak self] _ in
                 self?.refresh()

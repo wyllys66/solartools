@@ -31,7 +31,14 @@ public let solarRequestAddr:   UInt8 = 0x03   // request address
 public let solarBroadcastAddr: UInt8 = 0x10   // periodic broadcast from the keyboard
 
 // Full HID++ short request, including the leading report ID byte.
-public let solarRequestReport: [UInt8] = [0x10, 0x01, 0x09, 0x03, 0x78, 0x01, 0x00]
+//   byte 0: 0x10   short-report ID
+//   byte 1: 0x01   device index (device 1 on the receiver)
+//   byte 2: 0x0b   solar sub-id (== solarSubID)
+//   byte 3: 0x0f   feature / register selector
+//   byte 4: 0xFF   reports — overwritten per call in sendQuery(reports:);
+//                  the kept default asks the keyboard for "as many as it likes"
+//   byte 5..6: params
+public let solarRequestReport: [UInt8] = [0x10, 0x01, 0x0b, 0x0f, 0xFF, 0x01, 0x00]
 
 // MARK: - Public types
 
@@ -101,8 +108,13 @@ public final class SolarReceiver {
         IOHIDDeviceScheduleWithRunLoop(device, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
     }
 
-    public func sendQuery() throws {
-        let result = solarRequestReport.withUnsafeBufferPointer { ptr -> IOReturn in
+    /// Issue the solar-charge request. `reports` is written into byte 4 of the
+    /// HID++ packet and tells the keyboard how many status reports to emit
+    /// before quieting. Default (`0xFF`) means "keep them coming."
+    public func sendQuery(reports: UInt8 = 0xFF) throws {
+        var report = solarRequestReport
+        report[4] = reports
+        let result = report.withUnsafeBufferPointer { ptr -> IOReturn in
             IOHIDDeviceSetReport(
                 device,
                 kIOHIDReportTypeOutput,
