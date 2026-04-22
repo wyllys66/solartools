@@ -104,6 +104,9 @@ open /Applications/SolarBar.app
 
 When macOS prompts for Input Monitoring, toggle **SolarBar** on under *System Settings → Privacy & Security → Input Monitoring*, then quit and reopen the app once.
 
+**NOTE**
+If the app does not display any updates, click the light test button on the K750 keyboard to trigger an update.
+
 ### Start automatically at login
 
 Pick either:
