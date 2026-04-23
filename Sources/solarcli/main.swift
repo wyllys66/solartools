@@ -36,8 +36,7 @@
 // Background
 // ----------
 // The HID++ control packet and response layout follow from Julien Danjou's
-// 2012 reverse-engineering of the K750 on Linux. The C reference used during
-// development lives at ../logitech_k750/solar.c.
+// 2012 reverse-engineering of the K750 on Linux.
 //
 // Author
 // ------
