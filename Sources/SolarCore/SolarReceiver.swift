@@ -38,6 +38,13 @@ public let solarBroadcastAddr: UInt8 = 0x10   // periodic broadcast from the key
 //   byte 4: 0xFF   reports — overwritten per call in sendQuery(reports:);
 //                  the kept default asks the keyboard for "as many as it likes"
 //   byte 5..6: params
+//
+// This is a critical piece of data. This tells the keyboard to broadcast updates
+// automatically. The 0xFF mean repeat 255 times.  0x01 is the frequency period
+// in seconds.
+//
+// Change bytes 5,6 for different behavior.
+//
 public let solarRequestReport: [UInt8] = [0x10, 0x01, 0x0b, 0x0f, 0xFF, 0x01, 0x00]
 
 // MARK: - Public types

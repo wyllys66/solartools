@@ -12,6 +12,8 @@ The K750 reports its solar state over Logitech's vendor-specific HID++ protocol 
 | `solarbar`  | Menu bar app     | Menu bar widget with a popover showing circular gauges for charge (0–100%) and ambient light (0–500 lux). |
 | `SolarCore` | Library          | Shared HID++ transport used by both executables.                                                        |
 
+![SolarBar screenshot](images/screenshot.png)
+
 ## Requirements
 
 - macOS 13 or later
